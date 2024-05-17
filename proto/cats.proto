@@ -1,0 +1,63 @@
+syntax = "proto3";
+package felinet;
+
+service Handler {
+    rpc Login(LoginRequest) returns (LoginResponse);
+    rpc PushPackets(stream PacketIn) returns (PushPacketResponse);
+    rpc GetPackets(PacketRequest) returns (stream PacketOut);
+    rpc Ping(PingRequest) returns (PingResponse);
+}
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+    bytes uuid = 3;
+}
+
+message LoginResponse {
+    bool success = 1;
+    uint32 error = 2;
+    string msg = 3;
+}
+
+message PacketIn {
+    bytes raw = 1;
+    bytes uuid = 2;
+}
+
+message PushPacketResponse {}
+
+message PacketRequest {
+    repeated PacketFilter filters = 1;
+    bytes uuid = 2;
+}
+
+message PacketOut {
+    bytes raw = 1;
+}
+
+message PingRequest {
+    bytes uuid = 1;
+}
+
+message PingResponse {}
+
+message PacketFilter {
+    oneof filter {
+        uint32 all = 1;
+        DistanceFilter dist = 2;
+        CallsignFilter dest = 3;
+        uint32 heard_seconds = 4;
+    }
+}
+
+message DistanceFilter {
+    float latitude = 1;
+    float longitude = 2;
+    float distance = 3;
+}
+
+message CallsignFilter {
+    string callsign = 1;
+    uint32 ssid = 2;
+}
