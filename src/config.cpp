@@ -7,7 +7,7 @@ Config::Config()
 
 }
 
-void Config::load(const std::string file_name)
+bool Config::load(const std::string file_name)
 {
-
+	return false;
 }

@@ -6,7 +6,7 @@ class Config
 {
 public:
 	Config();
-	void load(const std::string file_name);
+	bool load(const std::string file_name);
 
 	std::string felinet_address() { return m_felinet_address; }
 	std::string callsign() { return m_callsign; }
