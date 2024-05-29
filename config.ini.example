@@ -1,0 +1,19 @@
+[connection]
+felinet_address = https://felinet.cats.radio
+felinet_heard_seconds = 900
+serial_port = /dev/ttyUSB0
+ignore_aprs = true
+
+[beacon]
+callsign = N0CALL
+comment = Hello CATS world!
+ssid = 0
+icon = 0
+interval = 120
+antenna_height = 0
+antenna_gain = 0
+
+[beacon.position]
+latitude = 0
+longitude = 0
+altitude = 0
