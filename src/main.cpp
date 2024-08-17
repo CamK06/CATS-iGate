@@ -208,6 +208,7 @@ bool felinet_send(cats_packet_t* pkt)
 
 bool radio_send(cats_packet_t* pkt)
 {
+	print_packet(pkt);
 	uint8_t buffer[CATS_MAX_PKT_LEN];
 	int len = cats_packet_semi_encode(pkt, buffer);
 	if(len == CATS_FAIL) {
@@ -416,7 +417,7 @@ int main()
 		}
 
 		if(memcmp(pkt_buf, CBOR_BEGIN, 3) != 0) {
-			//flog::error("Invalid packet");
+			flog::error("Invalid packet");
 			bytes_read = 0;
 			memset(pkt_buf, 0, CATS_MAX_PKT_LEN);
 			continue;
@@ -430,7 +431,7 @@ int main()
 		}
 		bytes_read = r;
 
-		//flog::debug("Read {} bytes from radio", bytes_read);
+		flog::debug("Read {} bytes from radio", bytes_read);
 
 		cats_packet_t* pkt;
 		cats_packet_prepare(&pkt);
@@ -455,9 +456,11 @@ int main()
 		}
 
 		// Digipeat the packet
+		// TODO: Add a delay here to avoid collisions?
 		int new_len = 0;
+		bool should_digipeat = cats_packet_should_digipeat(pkt, config.callsign.c_str(), config.ssid); // This has to be checked before past hop is added, else it always returns false
 		cats_route_add_past_hop(route, config.callsign.c_str(), config.ssid, rssi);
-		if(cats_packet_should_digipeat(pkt, config.callsign.c_str(), config.ssid)) {
+		if(should_digipeat) {
 			if(!radio_send(pkt)) {
 				flog::error("Failed to digipeat packet");
 				cats_packet_destroy(&pkt);
